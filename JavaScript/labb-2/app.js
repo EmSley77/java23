@@ -116,33 +116,41 @@ let daysOfWeek = [
   "Sunday",
 ];
 
-const todaysName = daysOfWeek[today.getDay() - 1];
+// set the get day -2 to get yesterdays special
+let todaysName = daysOfWeek[today.getDay() - 1];
 
 console.log("Today is:", todaysName);
 
-const isDinnerTime = currentHour >= 17;
+let isDinnerTime = currentHour >= 17;
 
-const todaysSpecial = weeklySpecial.weeklySpecialsMenu[todaysName];
-const upcomingSpecial = isDinnerTime ? todaysSpecial[1] : todaysSpecial[0];
+let todaysSpecial = weeklySpecial.weeklySpecialsMenu[todaysName];
+let upcomingSpecial = isDinnerTime ? todaysSpecial[1] : todaysSpecial[0];
 
-const title = (document.getElementById("specials-title").textContent =
-  upcomingSpecial.name);
-const specialsName = (document.getElementById(
-  "specials-dish-name"
-).textContent = upcomingSpecial.description);
-const price = (document.getElementById("specials-price").textContent =
-  upcomingSpecial.price);
+let title = document.getElementById("specials-title").textContent = upcomingSpecial.name;
+let specialsName = document.getElementById( "specials-dish-name").textContent = upcomingSpecial.description;
+let price = document.getElementById("specials-price").textContent =upcomingSpecial.price;
 
-// Hide the loading GIF
+document.getElementById("js-loading").classList = "hidden";
 
-// Show the specials content
+document.getElementById("specials__content").style.visibility = "visible";
+document.getElementById("specials__content").style.opacity = "100";
 
 console.log("Specials for today:");
-console.log(title);
+console.log(title); 
 console.log(specialsName);
 console.log(price);
 
-const yesterDaySpecial = document.getElementsByClassName(
-  "button button--specials"
-);
+const yesterDaySpecial = document.getElementById("yesterday-special");
 
+yesterDaySpecial.addEventListener("click", function() {
+    todaysName = daysOfWeek[today.getDay() - 2];
+    todaysSpecial = weeklySpecial.weeklySpecialsMenu[todaysName];
+    upcomingSpecial = isDinnerTime? todaysSpecial[1] : todaysSpecial[0];
+    title.textContent = upcomingSpecial.name;
+    specialsName.textContent = upcomingSpecial.description;
+    price.textContent = upcomingSpecial.price;
+    console.log(todaysName);
+    console.log(todaysSpecial);
+    console.log(upcomingSpecial);
+
+});
