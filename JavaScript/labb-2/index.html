@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="sv">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,18 +11,19 @@
   <link rel="stylesheet" href="./styles/specials-menu.css">
   <link rel="stylesheet" href="./styles/specials-content.css">
   <link rel="stylesheet" href="./styles/menu.css">
-  <script src="./app.js" type="module" defer></script>
+  <script src="./app.js" defer></script>
 
 </head>
+
 <body>
   <main class="hero overlay">
     <section id="home">
-        <h1 class="welcome">Välkommen till Karlssons</h1>
-        <p>Bästa maten i stan</p>
+      <h1 class="welcome">Välkommen till Karlssons</h1>
+      <p>Bästa maten i stan</p>
     </section>
     <section class="specials__container">
       <!-- Visas när ingen data laddats -->
-      <img src="./images/loading.gif" id="js-loading" class="loading-spinner" alt="Sidladdare" width="50%"/>
+      <img src="./images/loading.gif" id="js-loading" class="loading-spinner" alt="Sidladdare" width="50%" />
       <div id="specials__content" class="specials__content">
         <div class="specials__title">
           <!-- Sätt kommande erbjudande -->
@@ -30,14 +32,14 @@
            visa kommande middag samma dag.
           -->
           <h2 id="specials-title">{Dagens} {lunch}</h2>
-          <button class="button button--specials" id="yesterday-special">Gårdagens</button>
+          <button class="button button--specials" onclick="getYesterday()">Gårdagens</button>
         </div>
-       
+
         <div class="specials__header">
           <p id="specials-dish-name"></p>
           <p id="specials-price"></p>
         </div>
-      
+
       </div>
     </section>
 
@@ -55,7 +57,8 @@
         </a>
       </nav>
       <section id="content" class="menu__container">
-      </section>        
+
+      </section>
 
       <aside id="specials-menu" class="specials__menu">
         <h3>Veckas specialerbjudanden</h3>
@@ -68,8 +71,9 @@
       </aside>
   </main>
   <footer>
-      <p>Restaurangnamn &copy; 2024</p>
-      <p>Alla rättigheter förbehållna.</p>
+    <p>Restaurangnamn &copy; 2024</p>
+    <p>Alla rättigheter förbehållna.</p>
   </footer>
 </body>
+
 </html>

@@ -117,18 +117,31 @@ let daysOfWeek = [
 ];
 
 // set the get day -2 to get yesterdays special
-let todaysName = daysOfWeek[today.getDay() - 1];
+function getTodaysName() {
+  return  daysOfWeek[today.getDay() - 1];
+}
 
-console.log("Today is:", todaysName);
+function getYesterdaysName() {
+  return  daysOfWeek[today.getDay() - 2];
+}
 
 let isDinnerTime = currentHour >= 17;
 
-let todaysSpecial = weeklySpecial.weeklySpecialsMenu[todaysName];
+let todaysSpecial = weeklySpecial.weeklySpecialsMenu[getTodaysName()];
+
+/* 
+let yesterdaysSpecial = weeklySpecial.weeklySpecialsMenu[getYesterdaysName()];
+let yesterdaysUpcomingSpecial = isDinnerTime ? yesterdaysSpecial[1] : yesterdaysSpecial[0];
+let yesterDayTitle = (document.getElementById("specials-title").textContent ="kl " + getYesterday.getHours() + ":" +getYesterday.getMinutes() + " " + yesterdaysUpcomingSpecial.name);
+let yesterdaySpecialsName = (document.getElementById("specials-dish-name").textContent = yesterdaysUpcomingSpecial.description);
+let yesterdayPrice = (document.getElementById("specials-price").textContent = yesterdaysUpcomingSpecial.price + " kr"); 
+ */
+
 let upcomingSpecial = isDinnerTime ? todaysSpecial[1] : todaysSpecial[0];
 
-let title = document.getElementById("specials-title").textContent = upcomingSpecial.name;
-let specialsName = document.getElementById( "specials-dish-name").textContent = upcomingSpecial.description;
-let price = document.getElementById("specials-price").textContent =upcomingSpecial.price;
+let title = (document.getElementById("specials-title").textContent ="kl " + today.getHours() + ":" +today.getMinutes() + " " + upcomingSpecial.name);
+let specialsName = (document.getElementById("specials-dish-name").textContent = upcomingSpecial.description);
+let price = (document.getElementById("specials-price").textContent = upcomingSpecial.price + " kr");
 
 document.getElementById("js-loading").classList = "hidden";
 
@@ -136,21 +149,137 @@ document.getElementById("specials__content").style.visibility = "visible";
 document.getElementById("specials__content").style.opacity = "100";
 
 console.log("Specials for today:");
-console.log(title); 
+console.log(title);
 console.log(specialsName);
 console.log(price);
 
-const yesterDaySpecial = document.getElementById("yesterday-special");
+const yesterDaySpecial = document.getElementsByClassName("button--specials");
 
-yesterDaySpecial.addEventListener("click", function() {
-    todaysName = daysOfWeek[today.getDay() - 2];
-    todaysSpecial = weeklySpecial.weeklySpecialsMenu[todaysName];
-    upcomingSpecial = isDinnerTime? todaysSpecial[1] : todaysSpecial[0];
-    title.textContent = upcomingSpecial.name;
-    specialsName.textContent = upcomingSpecial.description;
-    price.textContent = upcomingSpecial.price;
-    console.log(todaysName);
-    console.log(todaysSpecial);
-    console.log(upcomingSpecial);
+function getYesterday() {
+  document.getElementById("specials__content").innerHTML = " ";
 
+  title.textContent = upcomingSpecial.name;
+  specialsName.textContent = upcomingSpecial.description;
+  price.textContent = upcomingSpecial.price;
+}
+
+// get grill snacks and other information
+let menu = {
+  Grill: [
+    {
+      name: "BBQ Revben",
+      price: "120",
+      description: "Långkokta revben med BBQ-sås",
+    },
+    {
+      name: "Grillad Kyckling",
+      price: "150",
+      description: "Marinerad kycklingbröst grillad till perfektion",
+    },
+    {
+      name: "Biff",
+      price: "190",
+      description: "Saftig biff med vitlökssmör",
+    },
+    {
+      name: "Grillad Lax",
+      price: "180",
+      description: "Laxfilé med citron och örter",
+    },
+    {
+      name: "Grönsaksspett",
+      price: "80",
+      description: "Blandade grönsaker grillade med olivolja",
+    },
+  ],
+  Snacks: [
+    {
+      name: "Pommes Frites",
+      price: "50",
+      description: "Krispiga gyllene pommes frites",
+    },
+    {
+      name: "Lökringar",
+      price: "60",
+      description: "Panerade och friterade lökringar",
+    },
+    {
+      name: "Mozzarella Sticks",
+      price: "70",
+      description: "Friterade mozzarellaoststänger",
+    },
+    {
+      name: "Kycklingvingar",
+      price: "90",
+      description: "Kryddiga kycklingvingar med dipsås",
+    },
+    {
+      name: "Nachos",
+      price: "80",
+      description: "Tortillachips med ost och jalapeños",
+    },
+  ],
+  Drycker: [
+    {
+      name: "Coca Cola",
+      price: "30",
+      description: "Klassisk Coca Cola",
+    },
+    {
+      name: "Apelsinjuice",
+      price: "40",
+      description: "Färskpressad apelsinjuice",
+    },
+    {
+      name: "Lemonad",
+      price: "35",
+      description: "Hemlagad lemonad",
+    },
+    {
+      name: "Is-te",
+      price: "35",
+      description: "Kall te med citron",
+    },
+    {
+      name: "Kaffe",
+      price: "25",
+      description: "Nybryggt kaffe",
+    },
+  ],
+};
+const menuButtons = document.getElementsByClassName("options");
+Array.from(menuButtons).forEach((button) => {
+  //for each button add event listener
+  button.addEventListener("click", function () {
+    //remove class options--active when button not active anymore
+    Array.from(menuButtons).forEach((btn) =>
+      btn.classList.remove("options--active")
+    );
+
+    // Add class options--active to the active button
+    button.classList.add("options--active");
+
+    //get value from button
+    const category = button.value;
+
+    // Get the content container
+    const content = document.getElementById("content");
+
+    content.innerHTML = " ";
+
+    // Populate content based on the selected category
+    menu[category].forEach((item) => {
+      const table = document.createElement("table");
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+
+      // Set table cell content
+      td.textContent = `${item.name} - ${item.description} - ${item.price} kr`;
+      tr.appendChild(td);
+      table.appendChild(tr);
+
+      // Append the table to the content section
+      content.appendChild(table);
+    });
+  });
 });
