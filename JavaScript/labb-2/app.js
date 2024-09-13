@@ -118,11 +118,11 @@ let daysOfWeek = [
 
 // set the get day -2 to get yesterdays special
 function getTodaysName() {
-  return  daysOfWeek[today.getDay() - 1];
+  return daysOfWeek[today.getDay() - 1];
 }
 
 function getYesterdaysName() {
-  return  daysOfWeek[today.getDay() - 2];
+  return daysOfWeek[today.getDay() - 2];
 }
 
 let isDinnerTime = currentHour >= 17;
@@ -139,9 +139,17 @@ let yesterdayPrice = (document.getElementById("specials-price").textContent = ye
 
 let upcomingSpecial = isDinnerTime ? todaysSpecial[1] : todaysSpecial[0];
 
-let title = (document.getElementById("specials-title").textContent ="kl " + today.getHours() + ":" +today.getMinutes() + " " + upcomingSpecial.name);
-let specialsName = (document.getElementById("specials-dish-name").textContent = upcomingSpecial.description);
-let price = (document.getElementById("specials-price").textContent = upcomingSpecial.price + " kr");
+let title = (document.getElementById("specials-title").textContent =
+  "kl " +
+  today.getHours() +
+  ":" +
+  today.getMinutes() +
+  " " +
+  upcomingSpecial.name);
+let specialsName = (document.getElementById("specials-dish-name").textContent =
+  upcomingSpecial.description);
+let price = (document.getElementById("specials-price").textContent =
+  upcomingSpecial.price + " kr");
 
 document.getElementById("js-loading").classList = "hidden";
 
@@ -281,5 +289,41 @@ Array.from(menuButtons).forEach((button) => {
       // Append the table to the content section
       content.appendChild(table);
     });
+  });
+});
+
+// aside menu_______________________________________________
+/* 
+const top = document.getElementsByClassName("menu-toggle-bar--top");
+const middle = document.getElementsByClassName("menu-toggle-bar--middle");
+const bottom = document.getElementsByClassName("menu-toggle-bar--bottom"); */
+
+const asideButton = document.getElementById("menu-toggle");
+
+const specialMenu = document.getElementById("specials-menu");
+const day = document.getElementById("day");
+const lunch = document.getElementById("lunch");
+const dinner = document.getElementById("dinner");
+const menuAside = document.getElementById("menu-aside");
+
+asideButton.addEventListener("click", function () {
+  specialMenu.classList.toggle("specials__menu--open");
+
+  menuAside.innerHTML = " ";
+
+
+  Object.keys(weeklySpecial.weeklySpecialsMenu).forEach(function (day) {
+    const dayTitle = document.createElement("h4");
+    const lunchItem = document.createElement("p");
+    const dinnerItem = document.createElement("p");
+
+    const lunchSpecial = weeklySpecial.weeklySpecialsMenu[day][0];
+    const dinnerSpecial = weeklySpecial.weeklySpecialsMenu[day][1];
+
+    dayTitle.textContent = day;
+    lunchItem.textContent = `Lunch: ${lunchSpecial.name} - ${lunchSpecial.description} (${lunchSpecial.price} kr, ${lunchSpecial.time})`;
+    dinnerItem.textContent = `Dinner: ${dinnerSpecial.name} - ${dinnerSpecial.description} (${dinnerSpecial.price} kr, ${dinnerSpecial.time})`;
+
+    menuAside.append(dayTitle, lunchItem, dinnerItem);
   });
 });
