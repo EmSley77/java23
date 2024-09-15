@@ -116,61 +116,93 @@ let daysOfWeek = [
   "Sunday",
 ];
 
-// set the get day -2 to get yesterdays special
 function getTodaysName() {
-  return daysOfWeek[today.getDay() - 1];
+  // `getDay()` returns 0 for Sunday, 1 for Monday, and so on. Adjust to match the daysOfWeek array.
+  return daysOfWeek[(today.getDay() + 6) % 7]; // This ensures 0 (Sunday) wraps around to 6 (Sunday in array).
 }
+
+
+window.onload = function () {
+  fetch("../labb-2/data/specials.json")
+    .then((response) => response.json())
+    .then((data) => {
+      // Check if it's dinner time (after 17:00)
+      let isDinnerTime = currentHour >= 17;
+
+      // Get today's specials from the fetched data
+      let todaysSpecial = data.weeklySpecialsMenu[getTodaysName()];
+
+      // Select lunch or dinner based on the current time
+      let upcomingSpecial = isDinnerTime ? todaysSpecial[1] : todaysSpecial[0];
+
+      // Update the content in the DOM
+      document.getElementById("specials-title").textContent =
+        "kl " +
+        today.getHours() +
+        ":" +
+        String(today.getMinutes()).padStart(2, "0") +
+        " " +
+        upcomingSpecial.name;
+
+      document.getElementById("specials-dish-name").textContent =
+        upcomingSpecial.description;
+      document.getElementById("specials-price").textContent =
+        upcomingSpecial.price + " kr";
+
+      // Hide loading spinner and show the content
+      document.getElementById("js-loading").classList.add("hidden");
+      document.getElementById("specials__content").style.visibility = "visible";
+      document.getElementById("specials__content").style.opacity = "100";
+    })
+    .catch((error) => {
+      console.error("Error loading specials", error);
+    });
+};
+
+// set the get day -2 to get yesterdays special
 
 function getYesterdaysName() {
-  return daysOfWeek[today.getDay() - 2];
+  return daysOfWeek[(today.getDay() + 5) % 7]; // Wrap around for yesterday
 }
-
-let isDinnerTime = currentHour >= 17;
-
-let todaysSpecial = weeklySpecial.weeklySpecialsMenu[getTodaysName()];
-
-/* 
-let yesterdaysSpecial = weeklySpecial.weeklySpecialsMenu[getYesterdaysName()];
-let yesterdaysUpcomingSpecial = isDinnerTime ? yesterdaysSpecial[1] : yesterdaysSpecial[0];
-let yesterDayTitle = (document.getElementById("specials-title").textContent ="kl " + getYesterday.getHours() + ":" +getYesterday.getMinutes() + " " + yesterdaysUpcomingSpecial.name);
-let yesterdaySpecialsName = (document.getElementById("specials-dish-name").textContent = yesterdaysUpcomingSpecial.description);
-let yesterdayPrice = (document.getElementById("specials-price").textContent = yesterdaysUpcomingSpecial.price + " kr"); 
- */
-
-let upcomingSpecial = isDinnerTime ? todaysSpecial[1] : todaysSpecial[0];
-
-let title = (document.getElementById("specials-title").textContent =
-  "kl " +
-  today.getHours() +
-  ":" +
-  today.getMinutes() +
-  " " +
-  upcomingSpecial.name);
-let specialsName = (document.getElementById("specials-dish-name").textContent =
-  upcomingSpecial.description);
-let price = (document.getElementById("specials-price").textContent =
-  upcomingSpecial.price + " kr");
-
-document.getElementById("js-loading").classList = "hidden";
-
-document.getElementById("specials__content").style.visibility = "visible";
-document.getElementById("specials__content").style.opacity = "100";
-
-console.log("Specials for today:");
-console.log(title);
-console.log(specialsName);
-console.log(price);
-
-const yesterDaySpecial = document.getElementsByClassName("button--specials");
 
 function getYesterday() {
-  document.getElementById("specials__content").innerHTML = " ";
 
-  title.textContent = upcomingSpecial.name;
-  specialsName.textContent = upcomingSpecial.description;
-  price.textContent = upcomingSpecial.price;
-}
+/*   const yesterDaySpecial = document.getElementsByClassName("button--specials");
+ */
 
+ // Clear previous content before loading yesterday's special
+ document.getElementById("specials-title").textContent = "Loading...";
+ document.getElementById("specials-dish-name").textContent = "";
+ document.getElementById("specials-price").textContent = "";
+
+
+  fetch("../labb-2/data/specials.json")
+    .then((response) => response.json())
+    .then((data) => {
+      // Check if it's dinner time (after 17:00)
+      let isDinnerTime = currentHour >= 17;
+
+      // Get today's specials from the fetched data
+      let todaysSpecial = data.weeklySpecialsMenu[getYesterdaysName()];
+
+      // Select lunch or dinner based on the current time
+      let upcomingSpecial = isDinnerTime ? todaysSpecial[1] : todaysSpecial[0];
+
+      // Update the content in the DOM
+      document.getElementById("specials-title").textContent =
+        "kl " +
+        today.getHours() +
+        ":" +
+        String(today.getMinutes()).padStart(2, "0") +
+        " " +
+        upcomingSpecial.name;
+
+      document.getElementById("specials-dish-name").textContent =
+        upcomingSpecial.description;
+      document.getElementById("specials-price").textContent =
+        upcomingSpecial.price + " kr";
+    });
+};
 // get grill snacks and other information
 let menu = {
   Grill: [
@@ -255,7 +287,9 @@ let menu = {
     },
   ],
 };
+
 const menuButtons = document.getElementsByClassName("options");
+
 Array.from(menuButtons).forEach((button) => {
   //for each button add event listener
   button.addEventListener("click", function () {
@@ -310,7 +344,6 @@ asideButton.addEventListener("click", function () {
   specialMenu.classList.toggle("specials__menu--open");
 
   menuAside.innerHTML = " ";
-
 
   Object.keys(weeklySpecial.weeklySpecialsMenu).forEach(function (day) {
     const dayTitle = document.createElement("h4");
