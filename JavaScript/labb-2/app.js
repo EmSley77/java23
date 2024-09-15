@@ -117,10 +117,8 @@ let daysOfWeek = [
 ];
 
 function getTodaysName() {
-  // `getDay()` returns 0 for Sunday, 1 for Monday, and so on. Adjust to match the daysOfWeek array.
-  return daysOfWeek[(today.getDay() + 6) % 7]; // This ensures 0 (Sunday) wraps around to 6 (Sunday in array).
+  return daysOfWeek[(today.getDay() + 6) % 7];
 }
-
 
 window.onload = function () {
   fetch("../labb-2/data/specials.json")
@@ -159,22 +157,15 @@ window.onload = function () {
     });
 };
 
-// set the get day -2 to get yesterdays special
-
 function getYesterdaysName() {
-  return daysOfWeek[(today.getDay() + 5) % 7]; // Wrap around for yesterday
+  return daysOfWeek[(today.getDay() + 5) % 7];
 }
 
 function getYesterday() {
-
-/*   const yesterDaySpecial = document.getElementsByClassName("button--specials");
- */
-
- // Clear previous content before loading yesterday's special
- document.getElementById("specials-title").textContent = "Loading...";
- document.getElementById("specials-dish-name").textContent = "";
- document.getElementById("specials-price").textContent = "";
-
+  //rensa tidigare text
+  document.getElementById("specials-title").textContent = "";
+  document.getElementById("specials-dish-name").textContent = "";
+  document.getElementById("specials-price").textContent = "";
 
   fetch("../labb-2/data/specials.json")
     .then((response) => response.json())
@@ -202,91 +193,7 @@ function getYesterday() {
       document.getElementById("specials-price").textContent =
         upcomingSpecial.price + " kr";
     });
-};
-// get grill snacks and other information
-let menu = {
-  Grill: [
-    {
-      name: "BBQ Revben",
-      price: "120",
-      description: "Långkokta revben med BBQ-sås",
-    },
-    {
-      name: "Grillad Kyckling",
-      price: "150",
-      description: "Marinerad kycklingbröst grillad till perfektion",
-    },
-    {
-      name: "Biff",
-      price: "190",
-      description: "Saftig biff med vitlökssmör",
-    },
-    {
-      name: "Grillad Lax",
-      price: "180",
-      description: "Laxfilé med citron och örter",
-    },
-    {
-      name: "Grönsaksspett",
-      price: "80",
-      description: "Blandade grönsaker grillade med olivolja",
-    },
-  ],
-  Snacks: [
-    {
-      name: "Pommes Frites",
-      price: "50",
-      description: "Krispiga gyllene pommes frites",
-    },
-    {
-      name: "Lökringar",
-      price: "60",
-      description: "Panerade och friterade lökringar",
-    },
-    {
-      name: "Mozzarella Sticks",
-      price: "70",
-      description: "Friterade mozzarellaoststänger",
-    },
-    {
-      name: "Kycklingvingar",
-      price: "90",
-      description: "Kryddiga kycklingvingar med dipsås",
-    },
-    {
-      name: "Nachos",
-      price: "80",
-      description: "Tortillachips med ost och jalapeños",
-    },
-  ],
-  Drycker: [
-    {
-      name: "Coca Cola",
-      price: "30",
-      description: "Klassisk Coca Cola",
-    },
-    {
-      name: "Apelsinjuice",
-      price: "40",
-      description: "Färskpressad apelsinjuice",
-    },
-    {
-      name: "Lemonad",
-      price: "35",
-      description: "Hemlagad lemonad",
-    },
-    {
-      name: "Is-te",
-      price: "35",
-      description: "Kall te med citron",
-    },
-    {
-      name: "Kaffe",
-      price: "25",
-      description: "Nybryggt kaffe",
-    },
-  ],
-};
+}
 
 const menuButtons = document.getElementsByClassName("options");
 
@@ -309,28 +216,41 @@ Array.from(menuButtons).forEach((button) => {
 
     content.innerHTML = " ";
 
-    // Populate content based on the selected category
-    menu[category].forEach((item) => {
-      const table = document.createElement("table");
-      const tr = document.createElement("tr");
-      const td = document.createElement("td");
+    fetch("../labb-2/data/menu.json")
+      .then((response) => response.json())
+      .then((data) => {
+        // Create a table to display the items
+        const table = document.createElement("table");
+        const tbody = document.createElement("tbody");
 
-      // Set table cell content
-      td.textContent = `${item.name} - ${item.description} - ${item.price} kr`;
-      tr.appendChild(td);
-      table.appendChild(tr);
+        // Populate content based on the selected category
+        data[category].forEach((item) => {
+          const tr = document.createElement("tr");
+          const td = document.createElement("td");
 
-      // Append the table to the content section
-      content.appendChild(table);
-    });
+          // Set table cell content
+          td.textContent = `${item.name} - ${item.description} - ${item.price} kr`;
+
+          tr.appendChild(td);
+          tbody.appendChild(tr);
+        });
+
+        // Append the table body to the table and add to the content section
+        table.appendChild(tbody);
+        content.appendChild(table);
+      })
+      .catch((error) => {
+        console.error("Error loading menu:", error);
+        content.textContent = "Error loading menu data.";
+      });
   });
 });
 
 // aside menu_______________________________________________
-/* 
-const top = document.getElementsByClassName("menu-toggle-bar--top");
-const middle = document.getElementsByClassName("menu-toggle-bar--middle");
-const bottom = document.getElementsByClassName("menu-toggle-bar--bottom"); */
+
+const topLine = document.querySelector(".menu-toggle-bar--top");
+const middleLine = document.querySelector(".menu-toggle-bar--middle");
+const bottomLine = document.querySelector(".menu-toggle-bar--bottom");
 
 const asideButton = document.getElementById("menu-toggle");
 
@@ -343,20 +263,33 @@ const menuAside = document.getElementById("menu-aside");
 asideButton.addEventListener("click", function () {
   specialMenu.classList.toggle("specials__menu--open");
 
+  /*   topLine.classList.toggle("nav-open");
+  middleLine.classList.toggle("nav-open");
+  bottomLine.classList.toggle("nav-open");
+ */
   menuAside.innerHTML = " ";
 
-  Object.keys(weeklySpecial.weeklySpecialsMenu).forEach(function (day) {
-    const dayTitle = document.createElement("h4");
-    const lunchItem = document.createElement("p");
-    const dinnerItem = document.createElement("p");
+  fetch("../labb-2/data/specials.json")
+    .then((response) => response.json())
+    .then((data) => {
+      // Iterate over the days and display specials
+      Object.keys(data.weeklySpecialsMenu).forEach((day) => {
+        const dayTitle = document.createElement("h4");
+        const lunchItem = document.createElement("p");
+        const dinnerItem = document.createElement("p");
 
-    const lunchSpecial = weeklySpecial.weeklySpecialsMenu[day][0];
-    const dinnerSpecial = weeklySpecial.weeklySpecialsMenu[day][1];
+        const lunchSpecial = data.weeklySpecialsMenu[day][0];
+        const dinnerSpecial = data.weeklySpecialsMenu[day][1];
 
-    dayTitle.textContent = day;
-    lunchItem.textContent = `Lunch: ${lunchSpecial.name} - ${lunchSpecial.description} (${lunchSpecial.price} kr, ${lunchSpecial.time})`;
-    dinnerItem.textContent = `Dinner: ${dinnerSpecial.name} - ${dinnerSpecial.description} (${dinnerSpecial.price} kr, ${dinnerSpecial.time})`;
+        dayTitle.textContent = day;
+        lunchItem.textContent = `Lunch: ${lunchSpecial.name} - ${lunchSpecial.description} (${lunchSpecial.price} kr, ${lunchSpecial.time})`;
+        dinnerItem.textContent = `Dinner: ${dinnerSpecial.name} - ${dinnerSpecial.description} (${dinnerSpecial.price} kr, ${dinnerSpecial.time})`;
 
-    menuAside.append(dayTitle, lunchItem, dinnerItem);
-  });
+        menuAside.append(dayTitle, lunchItem, dinnerItem);
+      });
+    })
+    .catch((error) => {
+      console.error("Error loading specials:", error);
+      menuAside.innerHTML = "Error loading menu data.";
+    });
 });
